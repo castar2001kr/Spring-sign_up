@@ -1,0 +1,7 @@
+package hello.hellospring.controller;
+
+@GetMapping("/")
+public class HomeController {
+
+	return "home";
+}

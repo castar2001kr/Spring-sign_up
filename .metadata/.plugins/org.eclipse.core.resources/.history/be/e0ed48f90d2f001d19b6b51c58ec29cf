@@ -1,0 +1,12 @@
+package hello.hellospring.repository;
+
+import hello.hellospring.repository.*;
+
+class MemoryRepositoryTest {
+
+	
+	MemoryMemberRepository repository = new MemoryMemberRepository();
+	
+	@Test
+	
+}

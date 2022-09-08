@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;project1.일반입력&apos; to &apos;ccc&apos;&#x0D;&#x0A;- Original project: &apos;project1&apos;&#x0D;&#x0A;- Original element: &apos;project1.일반입력&apos;&#x0D;&#x0A;- Renamed element: &apos;project1.ccc&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;일반입력&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;project1{일반입력.java[일반입력" matchStrategy="1" name="ccc" qualified="false" references="true" similarDeclarations="false" stamp="1662622374599" textual="false" version="1.0"/>
+</session>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        .table{
+            border-style: solid; /* border style규정해야됨 */
+            border-color: red;
+            border-width: 10px;
+            width: 500px;
+            height: 600px;
+        }
+
+        .table td{
+            border-style: solid;
+            border-color: black;
+            border-width: 1px;
+            
+            
+        }      
+
+
+        .table td{
+            height: 1/6em;
+            width: 1%;
+            align-content: center;
+            table-layout: fixed;
+        }
+        .table textarea{
+            height: inherit;
+            width: inherit;
+        }
+
+        .table td button{
+            width: 100%;
+            height: 100%;
+            font-size: 20px;
+            font-weight: bolder;
+        }
+
+        .table .result{
+            height : 150px;
+            width: 600px;
+            font-size: 40px;
+            font-weight: 1000;
+        }
+
+        .table{
+            position: relative;
+            left: 50px;
+            top: 50px;
+        }
+
+    
+    
+    </style>
+
+</head>
+
+<body>
+
+	<h1>HELLO SPRING!!!!!!!!!</h1>
+
+
+
+
+    <table class="table">
+
+        <tr>
+            <td id="myArea"  class="result" colspan="4">
+                
+            </td>
+        </tr>
+
+       
+
+        <tr>
+            <td><button>%</button></td>
+            <td><button>CE</button></td>
+            <td><button>C</button></td>
+            <td><button>기록</button></td>
+        </tr>
+
+        <tr>
+            <td><button>(</button></td>
+            <td><button>)</button></td>
+            <td><button></button></td>
+            <td><button>/</button></td>
+        </tr>
+        <tr>
+            <td><button>7</button></td>
+            <td><button>8</button></td>
+            <td><button>9</button></td>
+            <td><button>*</button></td>
+        </tr>
+        <tr>
+            <td><button>4</button></td>
+            <td><button>5</button></td>
+            <td><button>6</button></td>
+            <td><button>-</button></td>
+        </tr>
+        <tr>
+            <td><button>1</button></td>
+            <td><button>2</button></td>
+            <td><button>3</button></td>
+            <td><button>+</button></td>
+        </tr>
+        <tr>
+            <td><button></button></td>
+            <td><button>0</button></td>
+            <td><button>.</button></td>
+            <td><button>=</button></td>
+        </tr>
+        
+        
+
+
+
+    </table>
+
+    
+</body>
+
+<script>
+
+class Stack{
+
+           
+
+    constructor(){
+        
+        this.arr=new Array(10000);
+        this.first=0;
+        this.last=0;
+        this.child=null; //자식 스택
+        this.operator=null;
+        this.parent=null; //부모 스택
+    }
+
+    isEmpty(){
+        return this.first==this.last;
+    }
+
+    pop(){
+        return this.arr[--this.last];
+    }
+
+    push(ele){
+        this.arr[this.last++]=ele;
+    }
+
+    peek(){
+
+        if(this.isEmpty()){
+            console.log('빈 스택 접근')
+            return null;
+        }
+
+        return this.arr[this.last-1];
+    }
+
+}
+
+class Q{
+    
+
+    constructor(){
+        this.arr=new Array(10000);
+        this.first=0;
+        this.last=0;
+    }
+
+    isEmpty(){
+        return this.last==this.first;
+    }
+
+    deQ(){
+
+        if(!this.isEmpty())
+        return this.arr[this.first++];
+        else return false;
+    }
+
+    enQ(ele){
+        this.arr[this.last++]=ele;
+    }
+
+    delete(){
+        if(!this.isEmpty()){
+            this.first++;
+        }
+    }
+
+}
+
+const CalcResult=document.getElementById("myArea");
+
+let btnList=document.querySelectorAll("button");
+
+btnList.forEach(element => {
+    element.addEventListener('click',btnEvent);
+});
+
+
+
+
+
+let StringQ=new Q();
+let CalcStack=new Stack();
+CalcStack.parent='last';
+let NumStack=new Stack();
+let ErrorLog="";
+
+let storage=new Array();
+let stoCount=0;
+
+
+function btnEvent(){
+    
+    let val=this.innerText;
+    console.log(val);
+
+
+    if(val=='CE'){
+        CalcResult.innerText='';
+        stringQ=new Q();
+    }else if(val=='C'){
+        CalcResult.innerText=(''+CalcResult.innerText).substr(0,(''+CalcResult.innerText).length-1);
+
+    }else if(val=='기록'){
+        storage[stoCount++]=CalcResult.innerText;
+    }else if(val=='='){
+        
+        let idx=0;
+        while(idx<CalcResult.innerText.length){
+
+            StringQ.enQ(CalcResult.innerText.charAt(idx));
+            console.log('계산기 값을 큐에 넣는 중.... : '+ CalcResult.innerText.charAt(idx))
+            idx++;
+        }
+
+        while(!StringQ.isEmpty()){
+            pushNext(StringQ.deQ());
+        }
+
+        pushNext(')');
+
+
+        StringQ=new Q();
+        CalcStack=new Stack();
+        CalcStack.parent='last';
+        NumStack=new Stack();
+        ErrorLog="";
+
+        storage=new Array();
+        stoCount=0;
+
+    }else{
+        
+        CalcResult.innerText=CalcResult.innerText+val;
+    }
+
+
+}
+
+
+
+
+
+let Nullnumcom=false;
+
+function NumComplete(){
+
+    let O = 1;
+    let result=0;
+    let foundedDot=false;
+    Nullnumcom=0;
+
+    if(NumStack.isEmpty()){
+        console.log('숫자스택이 비어있다...')
+        Nullnumcom=true;
+        return;
+    }
+
+    while(!NumStack.isEmpty()){
+
+        let temp = NumStack.pop();
+        console.log('숫자만드는 중... : '+temp)
+
+        if(temp=='.'&& !foundedDot){
+            foundedDot=true;
+            result/=O;
+            O=1;
+        }else if(temp>=0&&temp<=9){
+            result+=temp*O;
+            O*=10;
+        }else if(temp=='.'){
+            ErrorLog+='소수점을 두번 적었어요...';
+            alert('ㅡㅡ;;;');
+            return;
+        }
+    }
+    console.log('완성된 숫자 : '+result)
+    Nullnumcom=false;
+    return result;
+}
+
+
+function primeCalc(){
+
+    let second=CalcStack.pop();
+    let first=CalcStack.pop();
+    let valtopush=0;
+
+    console.log('.......'+CalcStack.operator)
+
+    if(CalcStack.operator=='*'){
+        console.log('곱하기연산 진행중.....')
+        console.log(first+"...");
+        console.log(second+"...");
+        CalcStack.operator=null;
+
+        console.log(first*second);
+
+        valtopush=first*second
+
+    }else if(CalcStack.operator=='/'){
+        CalcStack.operator=null;
+        valtopush=first/second;
+
+    }else if(CalcStack.operator=='%'){
+        CalcStack.operator=null;
+        valtopush=first%second;
+    }
+
+    if(isNaN(valtopush)){
+        ErrorLog="잘못된 수식 또는 계산 범위 초과";
+    }
+
+    return valtopush;
+
+}
+
+function wrapUpCalc(){
+
+    console.log('한 계산 스택의 마무리연산 작업중....')
+
+    let result=0;
+    let temp=0;
+
+    while(!CalcStack.isEmpty()){
+        
+        let now=CalcStack.pop();
+        console.log('Wrapup....'+now);
+
+        if(now=='+'){
+            result+=temp;
+            temp=0;
+        }else if(now=='-'){
+            result-=temp;
+            temp=0;
+        }else{
+            temp=now;
+        }
+
+    }
+
+    if(temp!=0){
+        result+=temp;
+    }
+    console.log('결과 : '+result)
+
+    if(isNaN(result)){
+        Errorlog="잘못된 수식 또는 계산 범위 초과";
+    }
+
+    return result;
+
+}
+
+function pushNext(ele){
+
+    console.log('pushNext에 들어간 값 : '+ele);
+
+    if(ele=='+'){
+
+        if(CalcStack.operator!=null){
+            
+            let comnum=NumComplete();
+            if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+            }
+            
+            CalcStack.push(primeCalc());
+
+            }else{
+                let comnum=NumComplete();
+                if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+                }
+            }
+
+       
+        CalcStack.push(ele);
+
+    }else if(ele=='-'){
+        if(CalcStack.operator!=null){
+            
+            let comnum=NumComplete();
+            if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+            }
+            
+            CalcStack.push(primeCalc());
+
+            }else{
+                let comnum=NumComplete();
+                if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+                }
+            }
+
+       
+        CalcStack.push(ele);
+
+
+    }else if(ele=='*'){
+        
+        if(CalcStack.operator!=null){
+            
+            let comnum=NumComplete();
+            if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+            }
+            
+            CalcStack.push(primeCalc());
+
+            }else{
+                let comnum=NumComplete();
+                if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+                }
+            }
+
+        if(CalcStack.isEmpty()){
+            ErrorLog='곱하기가 잘못된 곳에 들어갓습니다...';
+        }
+       
+        CalcStack.operator='*';
+        
+    }else if(ele=='/'){
+        
+
+        if(CalcStack.operator!=null){
+            
+            let comnum=NumComplete();
+            if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+            }
+            
+            CalcStack.push(primeCalc());
+
+            }else{
+                let comnum=NumComplete();
+                if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+                }
+            }
+
+        if(CalcStack.isEmpty()){
+            ErrorLog='나누기가 잘못된 곳에 들어갓습니다...';
+        }
+
+
+        CalcStack.operator='/';
+        
+    }else if(ele=='%'){
+
+
+        if(CalcStack.operator!=null){
+            
+            let comnum=NumComplete();
+            if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+            }
+            
+            CalcStack.push(primeCalc());
+
+            }else{
+                let comnum=NumComplete();
+                if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+                }
+            }
+            
+        if(CalcStack.isEmpty()){
+            ErrorLog='모듈레이션 연산자가 잘못된 곳에 들어갓습니다...';
+        }
+
+        CalcStack.operator='%';
+        
+    }else if(ele=='('){
+
+        let comnum = NumComplete();
+
+        if(!Nullnumcom){ //2+2*1 때문에 넣어준 케이스...
+
+        CalcStack.push(comnum);
+        }
+
+        CalcStack.child=new Stack();
+        CalcStack.child.parent=CalcStack; //링크 걸기...
+        CalcStack=CalcStack.child; //자식으로 이동...
+  
+        
+    }else if(ele==')'){
+
+        if(CalcStack.parent!='last'){
+            console.log('상위 스택으로 가려고 하는 중...')
+
+            if(CalcStack.operator!=null){
+            
+            let comnum=NumComplete();
+            if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+            }
+            
+            CalcStack.push(primeCalc());
+
+            }else{
+                let comnum=NumComplete();
+                if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+                }else{
+                    CalcStack.push(0);
+                }
+            }
+            CalcStack.parent.push(wrapUpCalc());
+            CalcStack=CalcStack.parent; //링크 빼고 부모로 이동..
+            CalcStack.child=null;
+            
+        }else{
+
+
+            if(CalcStack.operator!=null){
+            
+            let comnum=NumComplete();
+            if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+            }
+            
+            CalcStack.push(primeCalc());
+
+            }else{
+                let comnum=NumComplete();
+                if(!Nullnumcom){
+
+                CalcStack.push(comnum);
+                }else{
+                    CalcStack.push(0);
+                }
+            }
+            if(ErrorLog==""){
+              
+                CalcResult.innerText=wrapUpCalc();
+                
+            }
+
+            else{ CalcResult.innerText=ErrorLog;
+            }
+        }
+
+
+    }else if(ele>=0&&ele<=9||ele=='.'){
+
+        if(ele=='.'){
+            NumStack.push(ele);
+            return;
+        }
+
+        NumStack.push(Number(ele));
+        console.log('numstack에 들어가는 수 : '+Number(ele))
+
+    }else{
+        ErrorLog+='숫자나 기호가 아닌 값을 적었어요...'
+        return;
+    }
+
+}
+
+
+</script>
+
+
+
+
+
+</html>

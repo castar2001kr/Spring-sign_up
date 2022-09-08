@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymleaf.org">
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+</head>
+<body>
+
+<div class = "container">
+	
+	<div>
+		
+		<h1>Hello Spring</h1>
+		<p>회원 기능</p>
+		<p>
+		
+			<a href="/member/new">회원 가입</a>
+			<a href="/member">회원 목록</a>
+		
+		</p>
+		
+	
+	</div>
+
+</div>
+
+
+</body>
+</html>

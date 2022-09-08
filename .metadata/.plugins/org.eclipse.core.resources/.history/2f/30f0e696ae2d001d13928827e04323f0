@@ -1,0 +1,22 @@
+package hello.hellospring.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HelloController {
+
+	
+	@GetMapping("hello") // get method로 들어온 요청에 맵핑
+	public String hello(Model model) { // 템플릿에 있는 view 가져옴
+		
+		
+		model.addAttribute("data","hello!!"); //view의 attribute에 값을 넣음. 
+		
+		return "hello2";
+		
+	}
+	
+	
+}
